@@ -1,0 +1,83 @@
+#include "status_task.h"
+#include "tim.h"
+#include "DataScope_DP.h"
+#include "usart.h"
+#include "bsp_T_imu.h"
+#include "stdbool.h"
+
+status_t status;
+
+/**
+  * @brief status_task
+  * @param
+  * @attention
+	* @note
+  */
+void status_task(void const *argu)
+{
+    for(;;)
+    {
+        static uint16_t cnt = 0;
+        static uint8_t led_status = 0;
+        taskENTER_CRITICAL();
+        cnt++;
+        if( cnt == 1 )
+        {
+            /* ÍÓÂÝÒÇ×´Ì¬ LED4 */
+            if( status.gyro_status[0] && status.gyro_status[1] &&\
+              (imu_data.wz * imu_data.pitch * imu_data.yaw) != 0)
+                HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, (GPIO_PinState)led_status);
+        }
+        if( cnt == 3 )
+        {
+            /* µ×ÅÌ×´Ì¬ LED3 */
+            if( status.chassis_status[0] && status.chassis_status[1] && \
+                status.chassis_status[2] && status.chassis_status[3] )
+                HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, (GPIO_PinState)led_status);
+        }
+        if( cnt == 5 )
+        {
+            /* ÔÆÌ¨×´Ì¬ LED2 */
+            if( status.gimbal_status[0] && status.gimbal_status[1] && \
+                status.gimbal_status[2] )
+                HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, (GPIO_PinState)led_status);
+        }
+        if( cnt == 7 )
+        {
+            /* ÊÓ¾õ»ò¹¦ÂÊ¿ØÖÆ×´Ì¬ LED1 */
+            if( status.power_control )
+                HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, (GPIO_PinState)led_status);
+//            if( status.vision_status )
+//                HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_8);
+        }
+        if( cnt == 7 )
+        {
+            led_status = !led_status;
+            cnt = 0;
+        }
+        /* ¸´Î» */
+        status_restore();
+        taskEXIT_CRITICAL();
+        osDelay(100);
+    }
+}
+
+void status_init()
+{
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8,  GPIO_PIN_SET);  //LED_D
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9,  GPIO_PIN_SET);  //LED_C
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);  //LED_B
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);  //LED_A
+}
+
+void status_restore()
+{
+    status.dbus_status = 0;
+    status.power_control = 0;
+    for(int i = 0; i<2; i++)
+        status.gyro_status[i] = 0;
+    for(int i = 0; i<4; i++)
+        status.chassis_status[i] = 0;
+    for(int i = 0; i<3; i++)
+        status.gimbal_status[i] = 0;
+}
