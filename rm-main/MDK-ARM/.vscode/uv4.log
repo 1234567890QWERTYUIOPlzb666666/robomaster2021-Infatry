@@ -1,0 +1,15 @@
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'rm_main'
+compiling gimbal_task.c...
+..\app\gimbal_task.c(162): warning:  #514-D: pointless comparison of unsigned integer with a negative constant
+      if(kb_status[KB_R] == -1)//小陀螺模�? 视觉10帧内一帧为有效信息 追随敌人  其他为无效信�? 保持中心瞄准
+..\app\gimbal_task.c(24): warning:  #177-D: function "vision_data_calcu"  was declared but never referenced
+  static void vision_data_calcu(void);
+..\app\gimbal_task.c(271): warning:  #177-D: function "static_data_calcu"  was declared but never referenced
+  static void static_data_calcu(void)
+..\app\gimbal_task.c: 3 warnings, 0 errors
+linking...
+Program Size: Code=39752 RO-data=2036 RW-data=800 ZI-data=25376  
+FromELF: creating hex file...
+".\rm_main\rm_main.axf" - 0 Error(s), 3 Warning(s).
+Build Time Elapsed:  00:00:05

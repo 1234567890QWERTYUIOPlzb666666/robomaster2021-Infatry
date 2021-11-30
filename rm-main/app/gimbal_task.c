@@ -21,7 +21,7 @@ extern TaskHandle_t can_msg_send_task_t;
 gimbal_t gimbal;
 
 static void vision_energy_calcu(void);
-
+static void vision_data_calcu(void);
 void gimbal_param_init(void)
 {
     memset(&gimbal, 0, sizeof(gimbal_t));
@@ -267,4 +267,30 @@ static void vision_energy_calcu(void)
 //    gimbal.pid.yaw_angle_ref = gimbal.pid.yaw_angle_fdb + vision.yaw.kal.angle_error;
 
 //    gimbal_pid_calcu();
+}
+static void static_data_calcu(void)
+{
+    vision.yaw.angle_error[1] = -vision.yaw.angle_error[1];
+    if(vision.yaw.angle_error[1] && vision.yaw.angle_error[0] && vision.distance)
+    {
+        vision.yaw.aim_speed = (vision.yaw.angle_error[1] - vision.yaw.angle_error[0]) / vision.period * 1000.0f;
+        vision.yaw.kal.aim_speed = Kalman1Filter_calc(&kalman_yaw_aim_speed, vision.yaw.aim_speed);
+        vision.yaw.kal.imu_speed = Kalman1Filter_calc(&kalman_yaw_imu_speed, imu_data.wz);
+       // vision.yaw.abs_speed = vision.yaw.kal.aim_speed + vision.yaw.kal.imu_speed/test_abs_speed_kp;  //ȷ��Ŀ�꾲ֹʱ�������ٶȱƽ�0
+
+        vision.yaw.kal.abs_speed = Kalman1Filter_calc(&kalman_yaw_abs_speed, vision.yaw.abs_speed);
+    }
+    else
+    {
+        vision.yaw.aim_speed = 0;
+        vision.yaw.kal.imu_speed = 0;
+        vision.yaw.kal.aim_speed = 0;
+        vision.yaw.abs_speed = 0;
+        vision.yaw.kal.abs_speed=0;
+    }
+
+    /* �滻��ʷ��Ϣ */
+    vision.pit.angle_error[0] = vision.pit.angle_error[1];
+    vision.yaw.angle_error[0] = vision.yaw.angle_error[1];
+
 }
