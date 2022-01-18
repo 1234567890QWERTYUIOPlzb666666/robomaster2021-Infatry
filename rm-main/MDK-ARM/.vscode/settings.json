@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "gimbal_task.h": "c",
+        "bsp_vision.h": "c"
+    }
+}

@@ -213,7 +213,8 @@ float * Kalman2Filter_calc(kalman2_filter_t *F, float signal1, float signal2)
   mat_sub(&F->Q, &F->P, &TEMP);//
   mat_mult(&TEMP, &F->Pminus, &F->P);
 
-  F->filtered_value[0] = F->xhat.pData[0];
+ // F->filtered_value[0] = F->xhat.pData[0];
+  F->filtered_value[0] = F->xhatminus.pData[0];
   F->filtered_value[1] = F->xhat.pData[1];
   return F->filtered_value;
 }

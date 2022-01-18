@@ -167,7 +167,7 @@ void MX_FREERTOS_Init(void) {
     osThreadDef(judgesendTask, judge_send_task, osPriorityNormal, 0, 128);
     judge_send_task_t = osThreadCreate(osThread(judgesendTask),NULL);
     
-//    /* 测试时使用，使用时会挂起其他任务 */
+//    /* 娴嬭瘯鏃朵娇鐢紝浣跨敤鏃朵細鎸傝捣鍏朵粬浠诲姟 */
 //    osThreadDef(debugTask, debug_task, osPriorityNormal, 0, 512);
 //    debug_task_t = osThreadCreate(osThread(debugTask), NULL);
     /**************************Low priority task**************************/

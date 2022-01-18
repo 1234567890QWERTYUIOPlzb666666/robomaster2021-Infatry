@@ -3,7 +3,7 @@
   * @version 1.0
   * @date Feb,23th 2021
 	*
-  * @brief  ÊÓ¾õĞÅÏ¢½âËã
+  * @brief  è§†è§‰ä¿¡æ¯è§£ç®—
 	*
   *	@author
   *
@@ -21,17 +21,17 @@
 vision_msg_t vision;
 float test_abs_speed_kp = 11.4f;
 /**
-  * @brief ÊÓ¾õĞÅÏ¢½âËã
+  * @brief è§†è§‰ä¿¡æ¯è§£ç®—
   * @param
   * @attention
 	* @note
   */
 void vision_data_handler(uint8_t *Vision_Data)
 {
-    /* ¾Ö²¿È«¾Ö±äÁ¿ */
+    /* å±€éƒ¨å…¨å±€å˜é‡ */
     static uint32_t vision_wake_time, last_vision_wake_time;
 
-    /* ½ÓÊÕÊÓ¾õĞÅÏ¢ */
+    /* æ¥æ”¶è§†è§‰ä¿¡æ¯ */
     memcpy(&vision.yaw.angle_error[1], Vision_Data, 4);
     memcpy(&vision.pit.angle_error[1],(Vision_Data+4), 4);
     memcpy(&vision.distance, (Vision_Data+8), 4);
@@ -41,21 +41,21 @@ void vision_data_handler(uint8_t *Vision_Data)
 
     memcpy(&vision.eof, (Vision_Data+17), 1);
 
-    /* ·ûºÅÍ³Ò»£º¸©ÊÓÄæÊ±ÕëÎª¸º */
+    /* ç¬¦å·ç»Ÿä¸€ï¼šä¿¯è§†é€†æ—¶é’ˆä¸ºè´Ÿ */
     vision.yaw.angle_error[1] = -vision.yaw.angle_error[1];
 
-    /* »ñÈ¡ÊÓ¾õÔËËãÖÜÆÚ */
+    /* è·å–è§†è§‰è¿ç®—å‘¨æœŸ */
     vision_wake_time = HAL_GetTick();
     vision.period = vision_wake_time - last_vision_wake_time;
     last_vision_wake_time = vision_wake_time;
 
-    /* YAWÖáÏòµĞ·½ËÙ¶È */
-    if(vision.yaw.angle_error[1] && vision.yaw.angle_error[0] && vision.distance)
+    /* YAWè½´å‘æ•Œæ–¹é€Ÿåº¦ */
+  /*  if(vision.yaw.angle_error[1] && vision.yaw.angle_error[0] && vision.distance)
     {
         vision.yaw.aim_speed = (vision.yaw.angle_error[1] - vision.yaw.angle_error[0]) / vision.period * 1000.0f;
         vision.yaw.kal.aim_speed = Kalman1Filter_calc(&kalman_yaw_aim_speed, vision.yaw.aim_speed);
         vision.yaw.kal.imu_speed = Kalman1Filter_calc(&kalman_yaw_imu_speed, imu_data.wz);
-        vision.yaw.abs_speed = vision.yaw.kal.aim_speed + vision.yaw.kal.imu_speed/test_abs_speed_kp;  //È·±£Ä¿±ê¾²Ö¹Ê±£¬¾ø¶ÔËÙ¶È±Æ½ü0
+        vision.yaw.abs_speed = vision.yaw.kal.aim_speed + vision.yaw.kal.imu_speed/test_abs_speed_kp;  //ç¡®ä¿ç›®æ ‡é™æ­¢æ—¶ï¼Œç»å¯¹é€Ÿåº¦é€¼è¿‘0
 
         vision.yaw.kal.abs_speed = Kalman1Filter_calc(&kalman_yaw_abs_speed, vision.yaw.abs_speed);
     }
@@ -66,10 +66,11 @@ void vision_data_handler(uint8_t *Vision_Data)
         vision.yaw.kal.aim_speed = 0;
         vision.yaw.abs_speed = 0;
         vision.yaw.kal.abs_speed=0;
-    }
+    }*/
 
-    /* Ìæ»»ÀúÊ·ĞÅÏ¢ */
-    vision.pit.angle_error[0] = vision.pit.angle_error[1];
+    /* æ›¿æ¢å†å²ä¿¡æ¯ */
+    /*vision.pit.angle_error[0] = vision.pit.angle_error[1];
     vision.yaw.angle_error[0] = vision.yaw.angle_error[1];
+    */
 }
 

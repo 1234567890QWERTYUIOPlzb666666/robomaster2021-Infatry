@@ -19,9 +19,8 @@
 
 extern TaskHandle_t can_msg_send_task_t;
 gimbal_t gimbal;
-
+float *Kalman2_yaw;
 static void vision_energy_calcu(void);
-static void vision_data_calcu(void);
 void gimbal_param_init(void)
 {
     memset(&gimbal, 0, sizeof(gimbal_t));
@@ -88,10 +87,17 @@ void gimbal_task(void const *argu)
         {
             //FGT_sin_cal(&test_s);
             //gimbal.pid.pit_ecd_ref = test_pit.out;
-            gimbal.pid.pit_ecd_ref   += rc.ch2 * scale.ch2;
-            gimbal.pid.yaw_mecd_ref  += rc.ch1 * (-0.008f);  //发射器测试时用
+            if(vision.distance==0)
+             {  gimbal.pid.pit_ecd_ref   += rc.ch2 * scale.ch2;
+               // gimbal.pid.yaw_mecd_ref  += rc.ch1 * (-0.008f);  //发射器测试时用
             //gimbal.pid.yaw_mecd_ref  = test_s.out;  //发射器测试时用
             gimbal.pid.yaw_angle_ref += rc.ch1 * scale.ch1;
+             }
+             else
+             {
+                   gimbal.pid.yaw_angle_ref +=  vision.yaw.angle_error[1];
+                    vision_calcu();
+             }
             gimbal_pid_calcu();
             break;
         }
@@ -132,11 +138,10 @@ void gimbal_task(void const *argu)
             break;
         }
         }
-
+        vision_data_calcu();
         memcpy(motor_cur.gimbal_cur, gimbal.current, sizeof(gimbal.current));
         osSignalSet(can_msg_send_task_t, GIMBAL_MOTOR_MSG_SEND);
         taskEXIT_CRITICAL();
-
         osDelayUntil(&mode_wake_time, GIMBAL_PERIOD);
     }
 }
@@ -178,7 +183,7 @@ void vision_calcu()
                                      vision.yaw.angle_error[1]/1.5f + vision.yaw.predict);  //目标绝对角速度 * 子弹飞行时间
 //        vision.yaw.kal.angle_error = Kalman1Filter_calc(&kalman_yaw_angle_error,
 //                                     vision.yaw.angle_error[1]/test_vision_angle_error_yaw_kp);
-        gimbal.pid.yaw_angle_ref = gimbal.pid.yaw_angle_fdb + vision.yaw.kal.angle_error;
+//        gimbal.pid.yaw_angle_ref = gimbal.pid.yaw_angle_fdb + vision.yaw.kal.angle_error;
 //        }
     }
     gimbal_pid_calcu();
@@ -268,7 +273,7 @@ static void vision_energy_calcu(void)
 
 //    gimbal_pid_calcu();
 }
-static void static_data_calcu(void)
+ void vision_data_calcu(void)
 {
     vision.yaw.angle_error[1] = -vision.yaw.angle_error[1];
     if(vision.yaw.angle_error[1] && vision.yaw.angle_error[0] && vision.distance)
@@ -293,4 +298,9 @@ static void static_data_calcu(void)
     vision.pit.angle_error[0] = vision.pit.angle_error[1];
     vision.yaw.angle_error[0] = vision.yaw.angle_error[1];
 
+}
+void vision_kalman2_calcu()
+{
+     Kalman2_yaw=Kalman2Filter_calc(&kalman2_yaw_filter,vision.yaw.angle_error[1]+imu_data.yaw,vision.yaw.abs_speed);
+     gimbal.pid.yaw_angle_ref=Kalman2_yaw[0] - imu_data.yaw;
 }

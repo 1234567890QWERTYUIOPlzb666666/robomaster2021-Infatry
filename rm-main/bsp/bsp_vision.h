@@ -1,9 +1,17 @@
+/*
+ * @Author: your name
+ * @Date: 2022-01-18 14:22:48
+ * @LastEditTime: 2022-01-18 21:27:51
+ * @LastEditors: Please set LastEditors
+ * @Description: æ‰“å¼€koroFileHeaderæŸ¥çœ‹é…ç½® è¿›è¡Œè®¾ç½®: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \MDK-ARMd:\RM\Infantry-up\robomaster2021-Infatry\rm-main\bsp\bsp_vision.h
+ */
 /**
   * @file bsp_vision.h
   * @version 1.0
   * @date Feb,23th 2021
 	*
-  * @brief  ÊÓ¾õĞÅÏ¢½âËã
+  * @brief  è§†è§‰ä¿¡æ¯è§£ç®—
 	*
   *	@author
   *
@@ -15,30 +23,30 @@
 
 typedef struct
 {
-    float angle_error[2];	//½Ç¶ÈÎó²î
-    float aim_speed;			//µĞ·½Ïà¶ÔËÙ¶È
-    float abs_speed;			//µĞ·½¾ø¶ÔËÙ¶È
-    float predict;				//×ÔÃéÔ¤²âÁ¿
+    float angle_error[2];	//è§’åº¦è¯¯å·®
+    float aim_speed;			//æ•Œæ–¹ç›¸å¯¹é€Ÿåº¦
+    float abs_speed;			//æ•Œæ–¹ç»å¯¹é€Ÿåº¦
+    float predict;				//è‡ªç„é¢„æµ‹é‡
     struct
     {
         float angle_error;
         float aim_speed;
         float abs_speed;
         float imu_speed;
-    } kal;								//¿¨¶ûÂüÂË²¨Ïà¹Ø
+    } kal;								//å¡å°”æ›¼æ»¤æ³¢ç›¸å…³
 } vision_gimbal_t;
 
 typedef struct
 {
-    vision_gimbal_t  pit; //PITÖáÏà¹ØÊÓ¾õĞÅÏ¢
-    vision_gimbal_t  yaw;	//YAWÖáÏà¹ØÊÓ¾õĞÅÏ¢
+    vision_gimbal_t  pit; //PITè½´ç›¸å…³è§†è§‰ä¿¡æ¯
+    vision_gimbal_t  yaw;	//YAWè½´ç›¸å…³è§†è§‰ä¿¡æ¯
 
-    float  		distance;			//µĞ·½¾àÀë
-    float       tof;				//×Óµ¯·ÉĞĞÊ±¼ä
-    uint16_t	period;				//ÊÓ¾õÔËËãÖÜÆÚ
-    char  		cnt;				//×Ô¼ÓÎ»(±£Ö¤ÊÓ¾õĞÅÏ¢ÔÚ³ÖĞø±ä»¯)
-    char  		eof;				//Ö¡Î²
-    uint8_t     aim_flag;			//Ë÷µĞ±êÖ¾Î» ²»¶ªÄ¿±êÖÃ1
+    float  		distance;			//æ•Œæ–¹è·ç¦»
+    float       tof;				//å­å¼¹é£è¡Œæ—¶é—´
+    uint16_t	period;				//è§†è§‰è¿ç®—å‘¨æœŸ
+    char  		cnt;				//è‡ªåŠ ä½(ä¿è¯è§†è§‰ä¿¡æ¯åœ¨æŒç»­å˜åŒ–)
+    char  		eof;				//å¸§å°¾
+    uint8_t     aim_flag;			//ç´¢æ•Œæ ‡å¿—ä½ ä¸ä¸¢ç›®æ ‡ç½®1
 } vision_msg_t;
 
 extern vision_msg_t vision;
